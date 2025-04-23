@@ -9,7 +9,92 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+        }
+        Relationships: []
+      }
+      roles: {
+        Row: {
+          id: number
+          name: Database["public"]["Enums"]["role_type"]
+        }
+        Insert: {
+          id?: number
+          name: Database["public"]["Enums"]["role_type"]
+        }
+        Update: {
+          id?: number
+          name?: Database["public"]["Enums"]["role_type"]
+        }
+        Relationships: []
+      }
+      system_events: {
+        Row: {
+          created_at: string | null
+          event_details: Json | null
+          event_type: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_details?: Json | null
+          event_type: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_details?: Json | null
+          event_type?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role_id: number | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          role_id?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          role_id?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +103,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      role_type: "medico" | "enfermero" | "tecnico" | "administrador"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +218,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      role_type: ["medico", "enfermero", "tecnico", "administrador"],
+    },
   },
 } as const

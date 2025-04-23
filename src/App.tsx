@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +9,7 @@ import ScanPage from "./pages/ScanPage";
 import PatientsPage from "./pages/PatientsPage";
 import PatientDetailPage from "./pages/PatientDetailPage";
 import Navbar from "./components/layout/Navbar";
+import AdminPanel from "./pages/AdminPanel";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +26,6 @@ const App = () => (
               element={<Index />} 
             />
             
-            {/* Routes with navbar */}
             <Route 
               path="/scan" 
               element={
@@ -55,7 +54,16 @@ const App = () => (
               } 
             />
             
-            {/* Catch-all route */}
+            <Route 
+              path="/admin" 
+              element={
+                <>
+                  <Navbar />
+                  <AdminPanel />
+                </>
+              } 
+            />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
