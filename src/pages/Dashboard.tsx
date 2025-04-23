@@ -22,6 +22,22 @@ const chartConfig = {
   visitas: { label: "Visitas", color: "#0ea5e9" }
 };
 
+const MonthlyVisitsBarChart = () => (
+  <ChartContainer config={chartConfig}>
+    {({ ResponsiveContainer, BarChart, XAxis, YAxis, Bar }: any) => (
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={chartData}>
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Bar dataKey="value" fill="#0ea5e9" name="visitas" />
+          <ChartTooltip />
+          <ChartLegend />
+        </BarChart>
+      </ResponsiveContainer>
+    )}
+  </ChartContainer>
+);
+
 const Dashboard = () => {
   const { user } = useAuth();
 
@@ -42,19 +58,7 @@ const Dashboard = () => {
       </div>
       <div className="bg-background rounded-lg shadow p-4">
         <h3 className="font-semibold mb-2">Visitas mensuales (simuladas)</h3>
-        <ChartContainer config={chartConfig}>
-          {({ ResponsiveContainer, BarChart, XAxis, YAxis, Bar }) => (
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Bar dataKey="value" fill="#0ea5e9" name="visitas" />
-                <ChartTooltip />
-                <ChartLegend />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-        </ChartContainer>
+        <MonthlyVisitsBarChart />
       </div>
     </div>
   );
