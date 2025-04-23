@@ -1,12 +1,14 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Database, ScanQrCode } from 'lucide-react';
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
+  const { user } = useAuth();
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="container mx-auto py-8">
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
         <div className="mb-8">
           <Database className="h-16 w-16 mx-auto text-primary" />
@@ -32,6 +34,12 @@ const Index = () => {
           </Link>
         </div>
       </div>
+      
+      {!user && (
+        <div className="mb-4">
+          <Link to="/auth" className="text-primary underline">Iniciar sesión</Link>
+        </div>
+      )}
       
       <footer className="py-6 border-t">
         <div className="container mx-auto px-4">

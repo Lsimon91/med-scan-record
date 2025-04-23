@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +11,8 @@ import PatientsPage from "./pages/PatientsPage";
 import PatientDetailPage from "./pages/PatientDetailPage";
 import Navbar from "./components/layout/Navbar";
 import AdminPanel from "./pages/AdminPanel";
+import ProtectedRoute from "./components/layout/ProtectedRoute";
+import AuthPage from "./pages/AuthPage";
 
 const queryClient = new QueryClient();
 
@@ -21,49 +24,52 @@ const App = () => (
       <BrowserRouter>
         <div className="min-h-screen flex flex-col">
           <Routes>
+            <Route path="/auth" element={<AuthPage />} />
             <Route 
               path="/" 
-              element={<Index />} 
-            />
-            
-            <Route 
-              path="/scan" 
               element={
                 <>
                   <Navbar />
-                  <ScanPage />
+                  <Index />
                 </>
+              } 
+            />
+            <Route 
+              path="/scan" 
+              element={
+                <ProtectedRoute>
+                  <Navbar />
+                  <ScanPage />
+                </ProtectedRoute>
               } 
             />
             <Route 
               path="/patients" 
               element={
-                <>
+                <ProtectedRoute>
                   <Navbar />
                   <PatientsPage />
-                </>
+                </ProtectedRoute>
               } 
             />
             <Route 
               path="/patients/:id" 
               element={
-                <>
+                <ProtectedRoute>
                   <Navbar />
                   <PatientDetailPage />
-                </>
+                </ProtectedRoute>
               } 
             />
-            
             <Route 
               path="/admin" 
               element={
-                <>
+                <ProtectedRoute>
                   <Navbar />
                   <AdminPanel />
-                </>
+                </ProtectedRoute>
               } 
             />
-            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

@@ -1,10 +1,12 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Database, ScanQrCode } from 'lucide-react';
+import LogoutButton from "@/components/layout/LogoutButton";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
+  const { user } = useAuth();
   return (
     <nav className="bg-primary text-primary-foreground shadow-md">
       <div className="container mx-auto px-4 py-2">
@@ -28,6 +30,7 @@ const Navbar = () => {
                 <span>Pacientes</span>
               </Button>
             </Link>
+            {user ? <LogoutButton /> : null}
           </div>
         </div>
       </div>
