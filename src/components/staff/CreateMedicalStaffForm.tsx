@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { databaseService } from '@/services/databaseService';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const formSchema = z.object({
   first_name: z.string().min(2, 'El nombre es requerido'),
@@ -23,7 +24,7 @@ const formSchema = z.object({
   specialization: z.string().min(2, 'La especialización es requerida'),
   license_number: z.string().min(2, 'El número de licencia es requerido'),
   phone_number: z.string().optional(),
-  email: z.string().email('Correo electrónico inválido').optional().or(z.literal('')),
+  email: z.string().email('Correo electrónico inválido').optional(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -35,6 +36,7 @@ interface CreateMedicalStaffFormProps {
 export function CreateMedicalStaffForm({ onSuccess }: CreateMedicalStaffFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
   
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -49,9 +51,22 @@ export function CreateMedicalStaffForm({ onSuccess }: CreateMedicalStaffFormProp
   });
 
   const onSubmit = async (data: FormSchema) => {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Debe iniciar sesión para realizar esta acción.",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      await databaseService.createMedicalStaff(data);
+      await databaseService.createMedicalStaff({
+        ...data,
+        user_id: user.id,
+      });
+      
       toast({
         title: "Personal médico creado",
         description: "El miembro del personal médico ha sido agregado exitosamente.",

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { databaseService } from '@/services/databaseService';
 import { Loader2 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -14,7 +14,6 @@ import {
   Legend
 } from "recharts";
 
-// Types for our summary data
 interface DashboardSummary {
   activeUsers: number;
   totalPatients: number;
@@ -54,15 +53,15 @@ const Dashboard = () => {
     const fetchSummary = async () => {
       try {
         const [patientsCount, recordsCount, staffCount] = await Promise.all([
-          supabase.from('patients').select('id', { count: 'exact', head: true }),
-          supabase.from('medical_records').select('id', { count: 'exact', head: true }),
-          supabase.from('medical_staff').select('id', { count: 'exact', head: true })
+          databaseService.getAllPatients(),
+          databaseService.getPatientRecords(''), // This will get all records
+          databaseService.getAllMedicalStaff()
         ]);
 
         setSummary({
-          activeUsers: staffCount.count || 0,
-          totalPatients: patientsCount.count || 0,
-          totalRecords: recordsCount.count || 0
+          activeUsers: staffCount.length || 0,
+          totalPatients: patientsCount.length || 0,
+          totalRecords: recordsCount.length || 0
         });
       } catch (error) {
         console.error('Error fetching summary:', error);
