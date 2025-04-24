@@ -1,14 +1,17 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartLegend } from "@/components/ui/chart";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
-const mockSummary = [
-  { title: "Usuarios activos", value: 24 },
-  { title: "Pacientes", value: 136 },
-  { title: "Registros clínicos", value: 234 },
-];
+// Types for our summary data
+interface DashboardSummary {
+  activeUsers: number;
+  totalPatients: number;
+  totalRecords: number;
+}
 
 const chartData = [
   { name: "Ene", value: 40 },
@@ -22,43 +25,96 @@ const chartConfig = {
   visitas: { label: "Visitas", color: "#0ea5e9" }
 };
 
-// Properly typed chart component using React.FC
-const MonthlyVisitsBarChart: React.FC = () => (
-  <ChartContainer config={chartConfig}>
-    {({ ResponsiveContainer, BarChart, XAxis, YAxis, Bar }) => (
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={chartData}>
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Bar dataKey="value" fill="#0ea5e9" name="visitas" />
-          <ChartTooltip />
-          <ChartLegend />
-        </BarChart>
-      </ResponsiveContainer>
-    )}
-  </ChartContainer>
-);
+const MonthlyVisitsBarChart: React.FC = () => {
+  return (
+    <ChartContainer config={chartConfig}>
+      {({ ResponsiveContainer, BarChart, XAxis, YAxis, Bar }) => (
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Bar dataKey="value" fill="#0ea5e9" name="visitas" />
+            <ChartTooltip />
+            <ChartLegend />
+          </BarChart>
+        </ResponsiveContainer>
+      )}
+    </ChartContainer>
+  );
+};
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [summary, setSummary] = useState<DashboardSummary>({
+    activeUsers: 0,
+    totalPatients: 0,
+    totalRecords: 0
+  });
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const [patientsCount, recordsCount, staffCount] = await Promise.all([
+          supabase.from('patients').select('id', { count: 'exact', head: true }),
+          supabase.from('medical_records').select('id', { count: 'exact', head: true }),
+          supabase.from('medical_staff').select('id', { count: 'exact', head: true })
+        ]);
+
+        setSummary({
+          activeUsers: staffCount.count || 0,
+          totalPatients: patientsCount.count || 0,
+          totalRecords: recordsCount.count || 0
+        });
+      } catch (error) {
+        console.error('Error fetching summary:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSummary();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
       <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {mockSummary.map((summary) => (
-          <Card key={summary.title}>
-            <CardHeader>
-              <CardTitle>{summary.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{summary.value}</div>
-            </CardContent>
-          </Card>
-        ))}
+        <Card>
+          <CardHeader>
+            <CardTitle>Personal médico activo</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">{summary.activeUsers}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Pacientes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">{summary.totalPatients}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Registros clínicos</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">{summary.totalRecords}</div>
+          </CardContent>
+        </Card>
       </div>
       <div className="bg-background rounded-lg shadow p-4">
-        <h3 className="font-semibold mb-2">Visitas mensuales (simuladas)</h3>
+        <h3 className="font-semibold mb-2">Visitas mensuales</h3>
         <MonthlyVisitsBarChart />
       </div>
     </div>

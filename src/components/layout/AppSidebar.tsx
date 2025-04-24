@@ -2,12 +2,13 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
-import { Home, Users, BarChart2, Settings } from "lucide-react";
+import { Home, Users, UserRound, BarChart2, Settings } from "lucide-react";
 
 const menuItems = [
   { title: "Dashboard", path: "/dashboard", icon: Home },
   { title: "Pacientes", path: "/patients", icon: Users },
-  { title: "Estadísticas", path: "/dashboard", icon: BarChart2 }, // Podrías tener una sección aparte
+  { title: "Personal Médico", path: "/medical-staff", icon: UserRound },
+  { title: "Estadísticas", path: "/dashboard", icon: BarChart2 },
   { title: "Gestión de usuarios", path: "/dashboard/users", icon: Settings },
 ];
 

@@ -9,6 +9,138 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      medical_records: {
+        Row: {
+          created_at: string | null
+          date: string | null
+          diagnosis: string
+          doctor_id: string | null
+          id: string
+          notes: string | null
+          patient_id: string
+          treatment: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date?: string | null
+          diagnosis: string
+          doctor_id?: string | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          treatment: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string | null
+          diagnosis?: string
+          doctor_id?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          treatment?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medical_records_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "medical_staff"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medical_records_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medical_staff: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          first_name: string
+          id: string
+          last_name: string
+          license_number: string
+          phone_number: string | null
+          specialization: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          first_name: string
+          id?: string
+          last_name: string
+          license_number: string
+          phone_number?: string | null
+          specialization: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          first_name?: string
+          id?: string
+          last_name?: string
+          license_number?: string
+          phone_number?: string | null
+          specialization?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      patients: {
+        Row: {
+          address: string | null
+          birth_date: string
+          created_at: string | null
+          email: string | null
+          first_name: string
+          gender: string
+          id: string
+          identification_number: string
+          last_name: string
+          phone_number: string
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          birth_date: string
+          created_at?: string | null
+          email?: string | null
+          first_name: string
+          gender: string
+          id?: string
+          identification_number: string
+          last_name: string
+          phone_number: string
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          birth_date?: string
+          created_at?: string | null
+          email?: string | null
+          first_name?: string
+          gender?: string
+          id?: string
+          identification_number?: string
+          last_name?: string
+          phone_number?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
