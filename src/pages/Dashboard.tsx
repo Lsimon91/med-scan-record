@@ -1,10 +1,18 @@
 
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartLegend } from "@/components/ui/chart";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import {
+  ResponsiveContainer,
+  BarChart,
+  XAxis,
+  YAxis,
+  Bar,
+  Tooltip,
+  Legend
+} from "recharts";
 
 // Types for our summary data
 interface DashboardSummary {
@@ -21,27 +29,17 @@ const chartData = [
   { name: "May", value: 70 },
 ];
 
-const chartConfig = {
-  visitas: { label: "Visitas", color: "#0ea5e9" }
-};
-
-const MonthlyVisitsBarChart: React.FC = () => {
-  return (
-    <ChartContainer config={chartConfig}>
-      {({ ResponsiveContainer, BarChart, XAxis, YAxis, Bar }) => (
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Bar dataKey="value" fill="#0ea5e9" name="visitas" />
-            <ChartTooltip />
-            <ChartLegend />
-          </BarChart>
-        </ResponsiveContainer>
-      )}
-    </ChartContainer>
-  );
-};
+const MonthlyVisitsBarChart = () => (
+  <ResponsiveContainer width="100%" height={300}>
+    <BarChart data={chartData}>
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip />
+      <Legend />
+      <Bar dataKey="value" fill="#0ea5e9" name="Visitas" />
+    </BarChart>
+  </ResponsiveContainer>
+);
 
 const Dashboard = () => {
   const { user } = useAuth();

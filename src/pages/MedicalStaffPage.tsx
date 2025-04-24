@@ -9,33 +9,39 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { databaseService, type MedicalStaff } from '@/services/databaseService';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Loader2, Plus, UserRound } from 'lucide-react';
+import { CreateMedicalStaffForm } from '@/components/staff/CreateMedicalStaffForm';
 
 const MedicalStaffPage = () => {
   const [staff, setStaff] = useState<MedicalStaff[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchStaff = async () => {
-      try {
-        const data = await databaseService.getAllMedicalStaff();
-        setStaff(data);
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "No se pudo cargar el personal médico.",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const fetchStaff = async () => {
+    try {
+      const data = await databaseService.getAllMedicalStaff();
+      setStaff(data);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo cargar el personal médico.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchStaff();
   }, [toast]);
+
+  const handleStaffCreated = () => {
+    fetchStaff();
+  };
 
   if (isLoading) {
     return (
@@ -49,10 +55,20 @@ const MedicalStaffPage = () => {
     <div className="container mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Personal Médico</h1>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Agregar Personal
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Agregar Personal
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Agregar Personal Médico</DialogTitle>
+            </DialogHeader>
+            <CreateMedicalStaffForm onSuccess={handleStaffCreated} />
+          </DialogContent>
+        </Dialog>
       </div>
 
       {staff.length > 0 ? (
