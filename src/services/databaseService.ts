@@ -19,7 +19,7 @@ export const databaseService = {
     return data;
   },
 
-  async createMedicalStaff(staffData: Omit<MedicalStaff, 'id' | 'created_at' | 'updated_at'>) {
+  async createMedicalStaff(staffData: Partial<Omit<MedicalStaff, 'id' | 'created_at' | 'updated_at'>>) {
     const { data, error } = await supabase
       .from('medical_staff')
       .insert([staffData])
