@@ -22,9 +22,10 @@ const chartConfig = {
   visitas: { label: "Visitas", color: "#0ea5e9" }
 };
 
-const MonthlyVisitsBarChart = () => (
+// Properly typed chart component using React.FC
+const MonthlyVisitsBarChart: React.FC = () => (
   <ChartContainer config={chartConfig}>
-    {({ ResponsiveContainer, BarChart, XAxis, YAxis, Bar }: any) => (
+    {({ ResponsiveContainer, BarChart, XAxis, YAxis, Bar }) => (
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData}>
           <XAxis dataKey="name" />
